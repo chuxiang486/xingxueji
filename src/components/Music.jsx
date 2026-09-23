@@ -1,0 +1,56 @@
+import { useState } from 'react'
+import { songs, musicCategories, qqMusicPlaylist } from '../data/music'
+import './Music.css'
+
+export default function Music() {
+  const [activeCategory, setActiveCategory] = useState('全部')
+
+  const filtered = activeCategory === '全部'
+    ? songs
+    : songs.filter(s => s.category === activeCategory)
+
+  return (
+    <section className="music" id="music">
+      <h2 className="section-title">音乐收藏</h2>
+
+      <div className="category-tabs">
+        {musicCategories.map(cat => (
+          <button
+            key={cat}
+            className={`tab ${activeCategory === cat ? 'active' : ''}`}
+            onClick={() => setActiveCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <a
+        href={qqMusicPlaylist}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="playlist-link"
+      >
+        在 QQ 音乐中打开完整歌单 →
+      </a>
+
+      <div className="song-list">
+        {filtered.map((song, index) => (
+          <div key={song.id} className="song-item">
+            <span className="song-number">{index + 1}</span>
+            <div className="song-info">
+              <span className="song-title">{song.title}</span>
+              <span className="song-artist">{song.artist}</span>
+            </div>
+            <span className="song-category-tag">{song.category}</span>
+          </div>
+        ))}
+      </div>
+
+      <p className="song-count">
+        共 {filtered.length} 首
+        {activeCategory !== '全部' && ` · ${activeCategory}`}
+      </p>
+    </section>
+  )
+}
