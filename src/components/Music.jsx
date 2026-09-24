@@ -43,6 +43,17 @@ export default function Music() {
               <span className="song-artist">{song.artist}</span>
             </div>
             <span className="song-category-tag">{song.category}</span>
+            <a
+              href={`https://y.qq.com/n/ryqq/search?w=${encodeURIComponent(song.title + ' ' + song.artist)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="song-play-btn"
+              title="在QQ音乐中播放"
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </a>
           </div>
         ))}
       </div>

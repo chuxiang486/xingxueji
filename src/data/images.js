@@ -11,6 +11,12 @@ export const images = [
     category: '游戏',
     title: '明日方舟',
   },
+  {
+    id: 3,
+    src: './images/OIP-C-2.webp',
+    category: '游戏',
+    title: '明日方舟',
+  },
 ]
 
 export const imageCategories = ['全部', '游戏', '动漫', '其他']

@@ -122,6 +122,29 @@
   border-radius: 1rem;
 }
 
+.song-play-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: rgba(180, 160, 255, 0.5);
+  background: rgba(140, 120, 220, 0.1);
+  border: 1px solid rgba(140, 120, 220, 0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.song-play-btn:hover {
+  color: #d4cfff;
+  background: rgba(140, 120, 220, 0.25);
+  border-color: rgba(140, 120, 220, 0.5);
+  transform: scale(1.1);
+}
+
 .song-count {
   text-align: center;
   color: rgba(200, 195, 220, 0.35);
@@ -135,5 +158,13 @@
   }
   .song-category-tag {
     display: none;
+  }
+  .song-play-btn {
+    width: 28px;
+    height: 28px;
+  }
+  .song-play-btn svg {
+    width: 14px;
+    height: 14px;
   }
 }
