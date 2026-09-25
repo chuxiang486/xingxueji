@@ -18,3 +18,42 @@ body {
 .app {
   min-height: 100vh;
 }
+
+.gallery,
+.music,
+.collection,
+.guestbook {
+  position: relative;
+}
+
+.gallery::before,
+.music::before,
+.collection::before,
+.guestbook::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
+  max-width: 1200px;
+  height: calc(100% - 4rem);
+  background: rgba(15, 15, 30, 0.4);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  z-index: -1;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  .gallery::before,
+  .music::before,
+  .collection::before,
+  .guestbook::before {
+    top: 1rem;
+    height: calc(100% - 2rem);
+    width: calc(100% - 1rem);
+    border-radius: 12px;
+  }
+}

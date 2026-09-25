@@ -3,6 +3,30 @@ import { images, imageCategories } from '../data/images'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Gallery.css'
 
+function GalleryItem({ img, index, sectionVisible, onClick }) {
+  const [loaded, setLoaded] = useState(false)
+
+  return (
+    <div
+      className={`gallery-item${sectionVisible ? ' reveal' : ''}`}
+      style={{ transitionDelay: sectionVisible ? `${index * 0.05}s` : '0s' }}
+      onClick={onClick}
+    >
+      <div className={`gallery-img-wrap${loaded ? ' loaded' : ''}`}>
+        <img
+          src={img.src}
+          alt={img.title}
+          loading="lazy"
+          onLoad={() => setLoaded(true)}
+        />
+      </div>
+      <div className="gallery-item-overlay">
+        <span>{img.title}</span>
+      </div>
+    </div>
+  )
+}
+
 export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState('全部')
   const [lightboxIndex, setLightboxIndex] = useState(null)
@@ -55,17 +79,13 @@ export default function Gallery() {
 
       <div className="gallery-grid">
         {filtered.map((img, index) => (
-          <div
+          <GalleryItem
             key={img.id}
-            className={`gallery-item${sectionVisible ? ' reveal' : ''}`}
-            style={{ transitionDelay: sectionVisible ? `${index * 0.05}s` : '0s' }}
+            img={img}
+            index={index}
+            sectionVisible={sectionVisible}
             onClick={() => openLightbox(index)}
-          >
-            <img src={img.src} alt={img.title} loading="lazy" />
-            <div className="gallery-item-overlay">
-              <span>{img.title}</span>
-            </div>
-          </div>
+          />
         ))}
       </div>
 

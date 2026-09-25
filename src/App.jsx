@@ -2,6 +2,7 @@ import Navbar from './components/Navbar'
 import StarBackground from './components/StarBackground'
 import CursorGlow from './components/CursorGlow'
 import LoadingScreen from './components/LoadingScreen'
+import EasterEgg from './components/EasterEgg'
 import Hero from './components/Hero'
 import Gallery from './components/Gallery'
 import Music from './components/Music'
@@ -16,6 +17,7 @@ function App() {
       <LoadingScreen />
       <StarBackground />
       <CursorGlow />
+      <EasterEgg />
       <Navbar />
       <Hero />
       <Gallery />

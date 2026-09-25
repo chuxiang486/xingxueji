@@ -1,0 +1,28 @@
+.visitor-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  color: rgba(200, 195, 220, 0.5);
+  margin-bottom: 0.8rem;
+}
+
+.visitor-star {
+  color: rgba(140, 120, 220, 0.6);
+  font-size: 0.7rem;
+  animation: visitorPulse 3s ease-in-out infinite;
+}
+
+.visitor-num {
+  color: rgba(212, 207, 255, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes visitorPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}

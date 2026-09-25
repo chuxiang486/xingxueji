@@ -11,6 +11,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const onScroll = () => {
@@ -35,15 +36,27 @@ export default function Navbar() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handleLinkClick = () => {
+    setMenuOpen(false)
+  }
+
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <span className="navbar-brand" onClick={handleBrandClick}>星屑集</span>
-      <div className="navbar-links">
+      <button
+        className={`hamburger${menuOpen ? ' open' : ''}`}
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="菜单"
+      >
+        <span /><span /><span />
+      </button>
+      <div className={`navbar-links${menuOpen ? ' open' : ''}`}>
         {navLinks.map((link) => (
           <a
             key={link.href}
             href={link.href}
             className={activeSection === link.href ? 'active' : ''}
+            onClick={handleLinkClick}
           >
             {link.label}
           </a>
