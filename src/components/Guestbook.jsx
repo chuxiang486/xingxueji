@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Guestbook.css'
 
-const TWIKOO_ENV = 'https://twikoo-xingxueji.2552879962.workers.dev'
+const TWIKOO_ENV = 'https://twikoo.026924.xyz'
 
 export default function Guestbook() {
   const [sectionRef, sectionVisible] = useScrollReveal()
