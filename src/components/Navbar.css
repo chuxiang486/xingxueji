@@ -22,6 +22,12 @@
   font-weight: 300;
   letter-spacing: 0.2em;
   color: #e8e6f0;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.navbar-brand:hover {
+  color: #d4cfff;
 }
 
 .navbar-links {
@@ -34,10 +40,31 @@
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.3s;
+  position: relative;
+}
+
+.navbar-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(140, 120, 220, 0.6);
+  transform: scaleX(0);
+  transition: transform 0.3s;
 }
 
 .navbar-links a:hover {
   color: #d4cfff;
+}
+
+.navbar-links a.active {
+  color: #d4cfff;
+}
+
+.navbar-links a.active::after {
+  transform: scaleX(1);
 }
 
 @media (max-width: 600px) {
