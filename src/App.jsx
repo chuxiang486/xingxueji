@@ -3,6 +3,7 @@ import StarBackground from './components/StarBackground'
 import Hero from './components/Hero'
 import Gallery from './components/Gallery'
 import Music from './components/Music'
+import Guestbook from './components/Guestbook'
 import Footer from './components/Footer'
 import './App.css'
 
@@ -14,6 +15,7 @@ function App() {
       <Hero />
       <Gallery />
       <Music />
+      <Guestbook />
       <Footer />
     </div>
   )

@@ -4,6 +4,7 @@ import './Navbar.css'
 const navLinks = [
   { href: '#gallery', label: '图片', id: 'gallery' },
   { href: '#music', label: '音乐', id: 'music' },
+  { href: '#guestbook', label: '留言', id: 'guestbook' },
 ]
 
 export default function Navbar() {
