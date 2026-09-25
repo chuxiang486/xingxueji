@@ -57,13 +57,10 @@
   color: rgba(180, 160, 255, 0.8);
   text-decoration: none;
   font-size: 0.9rem;
-  margin-bottom: 2rem;
   padding: 0.6rem 1.5rem;
   border: 1px solid rgba(140, 120, 220, 0.3);
   border-radius: 2rem;
   width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
   transition: all 0.3s;
 }
 
@@ -71,6 +68,43 @@
   background: rgba(140, 120, 220, 0.15);
   border-color: rgba(140, 120, 220, 0.5);
   color: #d4cfff;
+}
+
+.music-search-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.music-search {
+  width: 100%;
+  max-width: 360px;
+  padding: 0.55rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2rem;
+  color: #e8e6f0;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.music-search::placeholder {
+  color: rgba(200, 195, 220, 0.35);
+}
+
+.music-search:focus {
+  border-color: rgba(140, 120, 220, 0.5);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.song-empty {
+  text-align: center;
+  color: rgba(200, 195, 220, 0.35);
+  font-size: 0.9rem;
+  padding: 2rem 0;
 }
 
 .song-list {

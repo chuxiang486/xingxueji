@@ -1,0 +1,156 @@
+.collection {
+  padding: 4rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.collection-block {
+  margin-bottom: 3rem;
+}
+
+.collection-subtitle {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  color: rgba(212, 207, 255, 0.7);
+  margin: 0 0 1.5rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid rgba(140, 120, 220, 0.4);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s;
+}
+
+.collection-subtitle.reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.anime-grids {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.anime-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.5s ease, transform 0.5s ease, background 0.3s, border-color 0.3s;
+}
+
+.anime-card.reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.anime-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(140, 120, 220, 0.2);
+}
+
+.anime-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.anime-title {
+  color: #e8e6f0;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.anime-status {
+  color: rgba(180, 160, 255, 0.5);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.star-rating {
+  display: flex;
+  gap: 1px;
+  font-size: 0.75rem;
+}
+
+.star {
+  color: rgba(255, 255, 255, 0.1);
+}
+
+.star.filled {
+  color: rgba(220, 200, 120, 0.8);
+}
+
+.anime-note {
+  color: rgba(200, 195, 220, 0.4);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.game-grids {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.game-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.5s ease, transform 0.5s ease, background 0.3s, border-color 0.3s;
+}
+
+.game-card.reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.game-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(140, 120, 220, 0.2);
+}
+
+.game-title {
+  color: #e8e6f0;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.game-platform {
+  color: rgba(200, 195, 220, 0.45);
+  font-size: 0.8rem;
+}
+
+.game-hours {
+  color: rgba(180, 160, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+.game-note {
+  color: rgba(180, 160, 255, 0.6);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .collection {
+    padding: 3rem 1rem;
+  }
+  .anime-grids,
+  .game-grids {
+    grid-template-columns: 1fr;
+  }
+}

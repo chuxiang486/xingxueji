@@ -10,11 +10,14 @@ function getQQSearchUrl(title, artist) {
 
 export default function Music() {
   const [activeCategory, setActiveCategory] = useState('全部')
+  const [search, setSearch] = useState('')
   const [sectionRef, sectionVisible] = useScrollReveal()
 
-  const filtered = activeCategory === '全部'
-    ? songs
-    : songs.filter(s => s.category === activeCategory)
+  const keyword = search.trim().toLowerCase()
+
+  const filtered = songs
+    .filter(s => activeCategory === '全部' || s.category === activeCategory)
+    .filter(s => !keyword || s.title.toLowerCase().includes(keyword) || s.artist.toLowerCase().includes(keyword))
 
   return (
     <section className="music" id="music" ref={sectionRef}>
@@ -32,14 +35,23 @@ export default function Music() {
         ))}
       </div>
 
-      <a
-        href={qqMusicPlaylist}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="playlist-link"
-      >
-        在 QQ 音乐中打开完整歌单 →
-      </a>
+      <div className="music-search-wrap">
+        <input
+          type="text"
+          className="music-search"
+          placeholder="搜索歌名或歌手..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <a
+          href={qqMusicPlaylist}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="playlist-link"
+        >
+          在 QQ 音乐中打开完整歌单 →
+        </a>
+      </div>
 
       <div className={`song-list${sectionVisible ? ' reveal' : ''}`}>
         {filtered.map((song, index) => (
@@ -63,11 +75,15 @@ export default function Music() {
             </a>
           </div>
         ))}
+        {filtered.length === 0 && (
+          <p className="song-empty">没有找到匹配的歌曲</p>
+        )}
       </div>
 
       <p className="song-count">
         共 {filtered.length} 首
         {activeCategory !== '全部' && ` · ${activeCategory}`}
+        {keyword && ` · 搜索"${search.trim()}"`}
       </p>
     </section>
   )
