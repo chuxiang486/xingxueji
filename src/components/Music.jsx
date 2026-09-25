@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { songs, musicCategories, qqMusicPlaylist } from '../data/music'
+import useScrollReveal from '../hooks/useScrollReveal'
 import './Music.css'
 
 function getQQSearchUrl(title, artist) {
@@ -9,14 +10,15 @@ function getQQSearchUrl(title, artist) {
 
 export default function Music() {
   const [activeCategory, setActiveCategory] = useState('全部')
+  const [sectionRef, sectionVisible] = useScrollReveal()
 
   const filtered = activeCategory === '全部'
     ? songs
     : songs.filter(s => s.category === activeCategory)
 
   return (
-    <section className="music" id="music">
-      <h2 className="section-title">音乐收藏</h2>
+    <section className="music" id="music" ref={sectionRef}>
+      <h2 className={`section-title${sectionVisible ? ' reveal' : ''}`}>音乐收藏</h2>
 
       <div className="category-tabs">
         {musicCategories.map(cat => (
@@ -39,7 +41,7 @@ export default function Music() {
         在 QQ 音乐中打开完整歌单 →
       </a>
 
-      <div className="song-list">
+      <div className={`song-list${sectionVisible ? ' reveal' : ''}`}>
         {filtered.map((song, index) => (
           <div key={song.id} className="song-item">
             <span className="song-number">{index + 1}</span>
