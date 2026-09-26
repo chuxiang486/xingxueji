@@ -10,11 +10,13 @@ export async function onRequest(context) {
       return new Response('Not Found', { status: 404 })
     }
     const qiniuUrl = `${QINIU_BASE}/${filename}`
-    const headers = new Headers(request.headers)
-    headers.set('Referer', 'http://music.026924.xyz/')
+    const fetchHeaders = new Headers()
+    fetchHeaders.set('Referer', 'http://music.026924.xyz/')
+    const range = request.headers.get('Range')
+    if (range) fetchHeaders.set('Range', range)
     const response = await fetch(qiniuUrl, {
       method: request.method,
-      headers,
+      headers: fetchHeaders,
     })
     const newHeaders = new Headers(response.headers)
     newHeaders.set('Access-Control-Allow-Origin', '*')
