@@ -9,23 +9,28 @@ import Music from './components/Music'
 import Collection from './components/Collection'
 import Guestbook from './components/Guestbook'
 import Footer from './components/Footer'
+import PlayerBar from './components/PlayerBar'
+import { PlayerProvider } from './context/PlayerContext'
 import './App.css'
 
 function App() {
   return (
-    <div className="app">
-      <LoadingScreen />
-      <StarBackground />
-      <CursorGlow />
-      <EasterEgg />
-      <Navbar />
-      <Hero />
-      <Gallery />
-      <Music />
-      <Collection />
-      <Guestbook />
-      <Footer />
-    </div>
+    <PlayerProvider>
+      <div className="app">
+        <LoadingScreen />
+        <StarBackground />
+        <CursorGlow />
+        <EasterEgg />
+        <Navbar />
+        <Hero />
+        <Gallery />
+        <Music />
+        <Collection />
+        <Guestbook />
+        <Footer />
+        <PlayerBar />
+      </div>
+    </PlayerProvider>
   )
 }
 

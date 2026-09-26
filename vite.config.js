@@ -5,4 +5,13 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   base: './',
   plugins: [react()],
+  server: {
+    proxy: {
+      '/music': {
+        target: 'http://music.026924.xyz',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/music/, ''),
+      },
+    },
+  },
 })
