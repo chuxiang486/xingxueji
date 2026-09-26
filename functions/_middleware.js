@@ -18,7 +18,9 @@ export async function onRequest(context) {
     })
     const newHeaders = new Headers(response.headers)
     newHeaders.set('Access-Control-Allow-Origin', '*')
-    newHeaders.set('Cache-Control', 'public, max-age=31536000')
+    if (response.ok) {
+      newHeaders.set('Cache-Control', 'public, max-age=31536000')
+    }
     return new Response(response.body, {
       status: response.status,
       headers: newHeaders,
