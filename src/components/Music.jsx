@@ -44,15 +44,15 @@ export default function Music() {
     setExpandedCats(prev => ({ ...prev, [cat]: !prev[cat] }))
   }
 
-  const handlePlaySong = (cat, indexInCat) => {
-    const catSongs = grouped[cat]
-    if (!catSongs) return
-    playSong(catSongs, indexInCat)
+  const handlePlaySong = (songList, index) => {
+    playSong(songList, index)
   }
 
   const isCurrentSong = (song) => {
     return currentSong && currentSong.id === song.id
   }
+
+  const isAllView = activeCategory === '全部'
 
   return (
     <section className="music" id="music" ref={sectionRef}>
@@ -81,58 +81,96 @@ export default function Music() {
       </div>
 
       <div className={`song-groups${sectionVisible ? ' reveal' : ''}`}>
-        {Object.entries(grouped).map(([cat, catSongs]) => (
-          <div key={cat} className="song-group">
-            <button
-              className="song-group-header"
-              onClick={() => toggleCat(cat)}
-            >
-              <span className="song-group-dot" style={{ background: categoryColors[cat] || 'rgba(140,120,220,0.25)' }} />
-              <span className="song-group-name">{cat}</span>
-              <span className="song-group-count">{catSongs.length} 首</span>
-              <svg
-                className={`song-group-arrow ${expandedCats[cat] ? 'expanded' : ''}`}
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="currentColor"
-              >
-                <path d="M7 10l5 5 5-5z" />
-              </svg>
-            </button>
-
-            {expandedCats[cat] && (
-              <div className="song-group-list">
-                {catSongs.map((song, idx) => (
-                  <div
-                    key={song.id}
-                    className={`song-item ${isCurrentSong(song) ? 'playing' : ''}`}
-                    onClick={() => handlePlaySong(cat, idx)}
-                  >
-                    <div className="song-cover">
-                      {getFirstChar(song.title)}
-                    </div>
-                    <div className="song-info">
-                      <span className="song-title">{song.title}</span>
-                      <span className="song-artist">{song.artist}</span>
-                    </div>
-                    <div className="song-play-icon">
-                      {isCurrentSong(song) && isPlaying ? (
-                        <div className="sound-bars">
-                          <span /><span /><span /><span />
-                        </div>
-                      ) : (
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                          <path d="M8 5v14l11-7z" />
-                        </svg>
-                      )}
-                    </div>
+        {isAllView ? (
+          <div className="song-group">
+            <div className="song-group-header" style={{ cursor: 'default' }}>
+              <span className="song-group-dot" style={{ background: 'rgba(140,120,220,0.25)' }} />
+              <span className="song-group-name">全部歌曲</span>
+              <span className="song-group-count">{filtered.length} 首</span>
+            </div>
+            <div className="song-group-list">
+              {filtered.map((song, idx) => (
+                <div
+                  key={song.id}
+                  className={`song-item ${isCurrentSong(song) ? 'playing' : ''}`}
+                  onClick={() => handlePlaySong(filtered, idx)}
+                >
+                  <div className="song-cover">
+                    {getFirstChar(song.title)}
                   </div>
-                ))}
-              </div>
-            )}
+                  <div className="song-info">
+                    <span className="song-title">{song.title}</span>
+                    <span className="song-artist">{song.artist}</span>
+                  </div>
+                  <div className="song-play-icon">
+                    {isCurrentSong(song) && isPlaying ? (
+                      <div className="sound-bars">
+                        <span /><span /><span /><span />
+                      </div>
+                    ) : (
+                      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <path d="M8 5v14l11-7z" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
+        ) : (
+          Object.entries(grouped).map(([cat, catSongs]) => (
+            <div key={cat} className="song-group">
+              <button
+                className="song-group-header"
+                onClick={() => toggleCat(cat)}
+              >
+                <span className="song-group-dot" style={{ background: categoryColors[cat] || 'rgba(140,120,220,0.25)' }} />
+                <span className="song-group-name">{cat}</span>
+                <span className="song-group-count">{catSongs.length} 首</span>
+                <svg
+                  className={`song-group-arrow ${expandedCats[cat] ? 'expanded' : ''}`}
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                >
+                  <path d="M7 10l5 5 5-5z" />
+                </svg>
+              </button>
+
+              {expandedCats[cat] && (
+                <div className="song-group-list">
+                  {catSongs.map((song, idx) => (
+                    <div
+                      key={song.id}
+                      className={`song-item ${isCurrentSong(song) ? 'playing' : ''}`}
+                      onClick={() => handlePlaySong(catSongs, idx)}
+                    >
+                      <div className="song-cover">
+                        {getFirstChar(song.title)}
+                      </div>
+                      <div className="song-info">
+                        <span className="song-title">{song.title}</span>
+                        <span className="song-artist">{song.artist}</span>
+                      </div>
+                      <div className="song-play-icon">
+                        {isCurrentSong(song) && isPlaying ? (
+                          <div className="sound-bars">
+                            <span /><span /><span /><span />
+                          </div>
+                        ) : (
+                          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))
+        )}
         {filtered.length === 0 && (
           <p className="song-empty">没有找到匹配的歌曲</p>
         )}
