@@ -11,7 +11,7 @@ export async function onRequest(context) {
     }
     const qiniuUrl = `${QINIU_BASE}/${filename}`
     const headers = new Headers(request.headers)
-    headers.set('Referer', 'https://026924.xyz')
+    headers.set('Referer', 'http://music.026924.xyz/')
     const response = await fetch(qiniuUrl, {
       method: request.method,
       headers,

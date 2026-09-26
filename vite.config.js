@@ -11,6 +11,7 @@ export default defineConfig({
         target: 'http://music.026924.xyz',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/music/, ''),
+        headers: { Referer: 'http://music.026924.xyz/' },
       },
     },
   },
