@@ -187,6 +187,26 @@
   color: #fff;
 }
 
+.player-mode-btn {
+  position: relative;
+}
+
+.player-mode-btn.active {
+  color: rgba(180, 160, 255, 0.9);
+}
+
+.player-mode-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(180, 160, 255, 0.9);
+}
+
 .player-volume {
   display: flex;
   align-items: center;

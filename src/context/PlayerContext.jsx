@@ -10,6 +10,7 @@ export function PlayerProvider({ children }) {
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(0.7)
+  const [playMode, setPlayMode] = useState('sequence') // sequence | random | single
 
   const currentSong = currentIndex >= 0 ? playlist[currentIndex] : null
 
@@ -26,10 +27,26 @@ export function PlayerProvider({ children }) {
     const onTimeUpdate = () => setCurrentTime(audio.currentTime)
     const onLoadedMetadata = () => setDuration(audio.duration)
     const onEnded = () => {
-      if (currentIndex < playlist.length - 1) {
-        setCurrentIndex(i => i + 1)
+      if (playMode === 'single') {
+        // 单曲循环：重新播放当前歌曲
+        audio.currentTime = 0
+        audio.play().catch(() => {})
+      } else if (playMode === 'random') {
+        // 随机播放：随机选择下一首
+        if (playlist.length > 1) {
+          let nextIndex
+          do {
+            nextIndex = Math.floor(Math.random() * playlist.length)
+          } while (nextIndex === currentIndex)
+          setCurrentIndex(nextIndex)
+        }
       } else {
-        setIsPlaying(false)
+        // 顺序播放
+        if (currentIndex < playlist.length - 1) {
+          setCurrentIndex(i => i + 1)
+        } else {
+          setIsPlaying(false)
+        }
       }
     }
     const onPlay = () => setIsPlaying(true)
@@ -48,7 +65,7 @@ export function PlayerProvider({ children }) {
       audio.removeEventListener('play', onPlay)
       audio.removeEventListener('pause', onPause)
     }
-  }, [currentIndex, playlist.length])
+  }, [currentIndex, playlist.length, playMode])
 
   useEffect(() => {
     const audio = audioRef.current
@@ -99,6 +116,14 @@ export function PlayerProvider({ children }) {
     setVolume(v)
   }, [])
 
+  const cyclePlayMode = useCallback(() => {
+    setPlayMode(mode => {
+      if (mode === 'sequence') return 'random'
+      if (mode === 'random') return 'single'
+      return 'sequence'
+    })
+  }, [])
+
   return (
     <PlayerContext.Provider value={{
       currentSong,
@@ -108,6 +133,7 @@ export function PlayerProvider({ children }) {
       duration,
       volume,
       playlist,
+      playMode,
       audioRef,
       playSong,
       togglePlay,
@@ -115,6 +141,7 @@ export function PlayerProvider({ children }) {
       playPrev,
       seekTo,
       changeVolume,
+      cyclePlayMode,
     }}>
       {children}
       <audio ref={audioRef} preload="metadata" />
