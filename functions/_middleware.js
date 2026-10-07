@@ -12,6 +12,7 @@ export async function onRequest(context) {
     const qiniuUrl = `${QINIU_BASE}/${filename}`
     const fetchHeaders = new Headers()
     fetchHeaders.set('Referer', 'http://music.026924.xyz/')
+    fetchHeaders.set('Cache-Control', 'max-age=31536000')
     const range = request.headers.get('Range')
     if (range) fetchHeaders.set('Range', range)
     const response = await fetch(qiniuUrl, {

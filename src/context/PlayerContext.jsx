@@ -4,6 +4,7 @@ const PlayerContext = createContext(null)
 
 export function PlayerProvider({ children }) {
   const audioRef = useRef(null)
+  const preloadRef = useRef(null)
   const [playlist, setPlaylist] = useState([])
   const [currentIndex, setCurrentIndex] = useState(-1)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -77,6 +78,18 @@ export function PlayerProvider({ children }) {
     }
   }, [currentIndex, currentSong])
 
+  useEffect(() => {
+    const preload = preloadRef.current
+    if (!preload || playMode === 'single') return
+    const nextIndex = playMode === 'random'
+      ? Math.floor(Math.random() * playlist.length)
+      : currentIndex + 1
+    if (nextIndex >= 0 && nextIndex < playlist.length) {
+      preload.src = playlist[nextIndex].url
+      preload.load()
+    }
+  }, [currentIndex, playlist, playMode])
+
   const playSong = useCallback((songs, index) => {
     setPlaylist(songs)
     setCurrentIndex(index)
@@ -145,6 +158,7 @@ export function PlayerProvider({ children }) {
     }}>
       {children}
       <audio ref={audioRef} preload="metadata" />
+      <audio ref={preloadRef} preload="auto" muted style={{ display: 'none' }} />
     </PlayerContext.Provider>
   )
 }
