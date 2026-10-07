@@ -20,7 +20,7 @@ export default function LoadingScreen() {
     <div className={`loading-screen${fadeOut ? ' fade-out' : ''}`}>
       <div className="loading-content">
         <div className="loading-star" />
-        <p className="loading-text">星屑集</p>
+        <p className="loading-text">星尘集</p>
       </div>
     </div>
   )

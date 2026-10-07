@@ -42,7 +42,7 @@ export default function Navbar() {
 
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-      <span className="navbar-brand" onClick={handleBrandClick}>星屑集</span>
+      <span className="navbar-brand" onClick={handleBrandClick}>星尘集</span>
       <button
         className={`hamburger${menuOpen ? ' open' : ''}`}
         onClick={() => setMenuOpen(!menuOpen)}
