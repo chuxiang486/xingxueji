@@ -280,11 +280,24 @@
 
 @media (max-width: 600px) {
   .music {
-    padding: 3rem 1rem;
+    padding: 3rem 0.75rem;
   }
   .song-cover {
-    width: 32px;
-    height: 32px;
-    font-size: 0.8rem;
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
+  .song-item {
+    padding: 0.75rem;
+  }
+  .music-search {
+    max-width: 100%;
+  }
+  .category-tabs {
+    gap: 0.4rem;
+  }
+  .tab {
+    padding: 0.35rem 0.9rem;
+    font-size: 0.82rem;
   }
 }

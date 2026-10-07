@@ -249,6 +249,27 @@
     column-count: 1;
   }
   .gallery {
-    padding: 3rem 1rem;
+    padding: 3rem 0.75rem;
+  }
+  .gallery-item-overlay {
+    opacity: 1;
+    padding: 1.2rem 0.75rem 0.6rem;
+    font-size: 0.8rem;
+  }
+  .lightbox-close {
+    width: 44px;
+    height: 44px;
+    top: 1rem;
+    right: 1rem;
+  }
+  .lightbox-nav {
+    width: 44px;
+    height: 44px;
+  }
+  .lightbox-prev {
+    left: 0.75rem;
+  }
+  .lightbox-next {
+    right: 0.75rem;
   }
 }
