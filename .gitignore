@@ -26,3 +26,7 @@ dist-ssr
 # Deployment artifacts
 *.zip
 backup/
+
+# Wrangler
+.wrangler/
+nul
