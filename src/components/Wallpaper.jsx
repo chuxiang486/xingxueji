@@ -1,12 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { wallpapers, wallpaperCategories } from '../data/wallpapers'
+import { wallpapers } from '../data/wallpapers'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Wallpaper.css'
 
 export default function Wallpaper() {
   const [currentIndex, setCurrentIndex] = useState(null)
   const [showBrowser, setShowBrowser] = useState(false)
-  const [activeCategory, setActiveCategory] = useState('全部')
   const [isRevealing, setIsRevealing] = useState(false)
   const [sectionRef, sectionVisible] = useScrollReveal()
   const svgFilterRef = useRef(null)
@@ -55,10 +54,6 @@ export default function Wallpaper() {
       showRandom()
     }
   }, [])
-
-  const filtered = activeCategory === '全部'
-    ? wallpapers
-    : wallpapers.filter(item => item.category === activeCategory)
 
   if (wallpapers.length === 0) {
     return (
@@ -187,20 +182,8 @@ export default function Wallpaper() {
               </button>
             </div>
 
-            <div className="wallpaper-browser-tabs">
-              {wallpaperCategories.map(cat => (
-                <button
-                  key={cat}
-                  className={`tab ${activeCategory === cat ? 'active' : ''}`}
-                  onClick={() => setActiveCategory(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
             <div className="wallpaper-browser-grid">
-              {filtered.map((item) => {
+              {wallpapers.map((item) => {
                 const originalIndex = wallpapers.findIndex(w => w.id === item.id)
                 return (
                   <div

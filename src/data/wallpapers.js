@@ -30,5 +30,3 @@ export const wallpapers = [
     category: '动漫'
   }
 ]
-
-export const wallpaperCategories = ['全部', '风景', '动漫', '游戏', '抽象']
