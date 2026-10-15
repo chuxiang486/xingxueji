@@ -22,50 +22,53 @@ export default function Wallpaper() {
   const triggerReveal = useCallback(() => {
     setIsRevealing(true)
 
-    // 动态更新SVG滤镜属性
     const svg = document.querySelector('.wallpaper-svg-filters')
-    if (svg) {
-      const turbulence = svg.querySelector('feTurbulence')
-      const displacement = svg.querySelector('feDisplacementMap')
-      const blur = svg.querySelector('feGaussianBlur')
-
-      if (turbulence) turbulence.setAttribute('baseFrequency', '0.02')
-      if (displacement) displacement.setAttribute('scale', '80')
-      if (blur) blur.setAttribute('stdDeviation', '8')
-
-      // 动画过程中逐渐恢复
-      const duration = 1500
-      const startTime = performance.now()
-
-      const animate = (currentTime) => {
-        const elapsed = currentTime - startTime
-        const progress = Math.min(elapsed / duration, 1)
-        const easeProgress = 1 - Math.pow(1 - progress, 3) // ease-out
-
-        if (turbulence) {
-          const freq = 0.02 - (0.02 - 0.005) * easeProgress
-          turbulence.setAttribute('baseFrequency', freq.toString())
-        }
-        if (displacement) {
-          const scale = 80 * (1 - easeProgress)
-          displacement.setAttribute('scale', scale.toString())
-        }
-        if (blur) {
-          const blurVal = 8 * (1 - easeProgress)
-          blur.setAttribute('stdDeviation', blurVal.toString())
-        }
-
-        if (progress < 1) {
-          requestAnimationFrame(animate)
-        } else {
-          setIsRevealing(false)
-        }
-      }
-
-      requestAnimationFrame(animate)
-    } else {
+    if (!svg) {
       const timer = setTimeout(() => setIsRevealing(false), 1500)
       return () => clearTimeout(timer)
+    }
+
+    const turbulence = svg.querySelector('feTurbulence')
+    const displacement = svg.querySelector('feDisplacementMap')
+    const blur = svg.querySelector('feGaussianBlur')
+
+    if (turbulence) turbulence.setAttribute('baseFrequency', '0.02')
+    if (displacement) displacement.setAttribute('scale', '80')
+    if (blur) blur.setAttribute('stdDeviation', '8')
+
+    const duration = 1500
+    const startTime = performance.now()
+    let animationId
+
+    const animate = () => {
+      const elapsed = performance.now() - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const easeProgress = 1 - Math.pow(1 - progress, 3)
+
+      if (turbulence) {
+        const freq = 0.02 - (0.02 - 0.005) * easeProgress
+        turbulence.setAttribute('baseFrequency', freq.toString())
+      }
+      if (displacement) {
+        const scale = 80 * (1 - easeProgress)
+        displacement.setAttribute('scale', scale.toString())
+      }
+      if (blur) {
+        const blurVal = 8 * (1 - easeProgress)
+        blur.setAttribute('stdDeviation', blurVal.toString())
+      }
+
+      if (progress < 1) {
+        animationId = requestAnimationFrame(animate)
+      } else {
+        setIsRevealing(false)
+      }
+    }
+
+    animationId = requestAnimationFrame(animate)
+
+    return () => {
+      if (animationId) cancelAnimationFrame(animationId)
     }
   }, [])
 
