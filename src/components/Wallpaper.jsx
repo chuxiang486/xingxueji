@@ -21,8 +21,52 @@ export default function Wallpaper() {
 
   const triggerReveal = useCallback(() => {
     setIsRevealing(true)
-    const timer = setTimeout(() => setIsRevealing(false), 1500)
-    return () => clearTimeout(timer)
+
+    // 动态更新SVG滤镜属性
+    const svg = document.querySelector('.wallpaper-svg-filters')
+    if (svg) {
+      const turbulence = svg.querySelector('feTurbulence')
+      const displacement = svg.querySelector('feDisplacementMap')
+      const blur = svg.querySelector('feGaussianBlur')
+
+      if (turbulence) turbulence.setAttribute('baseFrequency', '0.02')
+      if (displacement) displacement.setAttribute('scale', '80')
+      if (blur) blur.setAttribute('stdDeviation', '8')
+
+      // 动画过程中逐渐恢复
+      const duration = 1500
+      const startTime = performance.now()
+
+      const animate = (currentTime) => {
+        const elapsed = currentTime - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        const easeProgress = 1 - Math.pow(1 - progress, 3) // ease-out
+
+        if (turbulence) {
+          const freq = 0.02 - (0.02 - 0.005) * easeProgress
+          turbulence.setAttribute('baseFrequency', freq.toString())
+        }
+        if (displacement) {
+          const scale = 80 * (1 - easeProgress)
+          displacement.setAttribute('scale', scale.toString())
+        }
+        if (blur) {
+          const blurVal = 8 * (1 - easeProgress)
+          blur.setAttribute('stdDeviation', blurVal.toString())
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(animate)
+        } else {
+          setIsRevealing(false)
+        }
+      }
+
+      requestAnimationFrame(animate)
+    } else {
+      const timer = setTimeout(() => setIsRevealing(false), 1500)
+      return () => clearTimeout(timer)
+    }
   }, [])
 
   const showRandom = useCallback(() => {
@@ -75,49 +119,19 @@ export default function Wallpaper() {
           <filter id="dissolve">
             <feTurbulence
               type="fractalNoise"
-              baseFrequency={isRevealing ? "0.01" : "0.01"}
+              baseFrequency="0.01"
               numOctaves="3"
               seed="5"
               result="noise"
-            >
-              {isRevealing && (
-                <animate
-                  attributeName="baseFrequency"
-                  from="0.02"
-                  to="0.005"
-                  dur="1.5s"
-                  fill="freeze"
-                />
-              )}
-            </feTurbulence>
+            />
             <feDisplacementMap
               in="SourceGraphic"
               in2="noise"
-              scale={isRevealing ? "50" : "0"}
+              scale="0"
               xChannelSelector="R"
               yChannelSelector="G"
-            >
-              {isRevealing && (
-                <animate
-                  attributeName="scale"
-                  from="80"
-                  to="0"
-                  dur="1.5s"
-                  fill="freeze"
-                />
-              )}
-            </feDisplacementMap>
-            <feGaussianBlur stdDeviation={isRevealing ? "0" : "0"}>
-              {isRevealing && (
-                <animate
-                  attributeName="stdDeviation"
-                  from="8"
-                  to="0"
-                  dur="1.2s"
-                  fill="freeze"
-                />
-              )}
-            </feGaussianBlur>
+            />
+            <feGaussianBlur stdDeviation="0" />
           </filter>
         </defs>
       </svg>
@@ -127,10 +141,7 @@ export default function Wallpaper() {
       <div className={`wallpaper-showcase${isRevealing ? ' revealing' : ''}`}>
         {currentWallpaper && (
           <div
-            className="wallpaper-display"
-            style={{
-              filter: isRevealing ? 'url(#dissolve)' : 'none'
-            }}
+            className={`wallpaper-display${isRevealing ? ' revealing' : ''}`}
           >
             <img
               src={currentWallpaper.src}
