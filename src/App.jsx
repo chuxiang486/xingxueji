@@ -5,6 +5,7 @@ import LoadingScreen from './components/LoadingScreen'
 import EasterEgg from './components/EasterEgg'
 import Hero from './components/Hero'
 import Gallery from './components/Gallery'
+import Wallpaper from './components/Wallpaper'
 import Music from './components/Music'
 import Collection from './components/Collection'
 import Guestbook from './components/Guestbook'
@@ -24,6 +25,7 @@ function App() {
         <Navbar />
         <Hero />
         <Gallery />
+        <Wallpaper />
         <Music />
         <Collection />
         <Guestbook />
