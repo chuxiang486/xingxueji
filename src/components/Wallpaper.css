@@ -35,6 +35,10 @@
   position: relative;
 }
 
+.wallpaper-display.revealing {
+  filter: url(#dissolve);
+}
+
 .wallpaper-main-img {
   width: 100%;
   height: 100%;
