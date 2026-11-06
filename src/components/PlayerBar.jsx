@@ -28,21 +28,22 @@ export default function PlayerBar() {
     seekTo,
     changeVolume,
     cyclePlayMode,
+    status,
+    error,
+    retryPlayback,
+    canPlayNext,
   } = usePlayer()
 
   if (!currentSong) return null
 
   const progress = duration ? (currentTime / duration) * 100 : 0
 
-  const handleProgressClick = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    const ratio = (e.clientX - rect.left) / rect.width
-    seekTo(ratio * duration)
-  }
+  const loading = status === 'loading'
+  const modeLabel = playMode === 'sequence' ? '顺序播放' : playMode === 'random' ? '随机播放' : '单曲循环'
 
   return (
-    <div className="player-bar">
-      <div className="player-progress-bg" onClick={handleProgressClick}>
+    <section className="player-bar" aria-label="音乐播放器">
+      <div className="player-progress-bg" aria-hidden="true">
         <div className="player-progress-fill" style={{ width: `${progress}%` }} />
       </div>
 
@@ -52,27 +53,29 @@ export default function PlayerBar() {
             {getFirstChar(currentSong.title)}
           </div>
           <div className="player-info">
-            <span className="player-title">{currentSong.title}</span>
-            <span className="player-artist">{currentSong.artist}</span>
+            <span className="player-title" title={currentSong.title}>{currentSong.title}</span>
+            <span className="player-artist" title={currentSong.artist}>{currentSong.artist}</span>
           </div>
         </div>
 
         <div className="player-center">
           <span className="player-time">{formatTime(currentTime)}</span>
-          <div className="player-bar-track" onClick={handleProgressClick}>
-            <div className="player-bar-fill" style={{ width: `${progress}%` }} />
-          </div>
+          <input type="range" className="player-seek" aria-label="播放进度"
+            min="0" max={duration || 1} step="0.1" value={Math.min(currentTime, duration || 0)}
+            disabled={!duration || status === 'error'}
+            aria-valuetext={`${formatTime(currentTime)} / ${formatTime(duration)}`}
+            onChange={e => seekTo(Number(e.target.value))} />
           <span className="player-time">{formatTime(duration)}</span>
         </div>
 
         <div className="player-right">
-          <button className="player-btn" onClick={playPrev} disabled={!currentSong}>
+          <button className="player-btn" onClick={playPrev} aria-label="上一首或回到开头" title="上一首或回到开头">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
             </svg>
           </button>
-          <button className="player-btn player-btn-play" onClick={togglePlay}>
-            {isPlaying ? (
+          <button className="player-btn player-btn-play" onClick={togglePlay} aria-label={loading ? '取消加载' : isPlaying ? '暂停' : status === 'error' ? '重试播放' : '播放'}>
+            {loading ? <span className="player-spinner" aria-hidden="true" /> : isPlaying ? (
               <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
                 <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
               </svg>
@@ -82,7 +85,7 @@ export default function PlayerBar() {
               </svg>
             )}
           </button>
-          <button className="player-btn" onClick={playNext} disabled={!currentSong}>
+          <button className="player-btn" onClick={playNext} disabled={!canPlayNext} aria-label="下一首" title="下一首">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
               <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
             </svg>
@@ -91,7 +94,8 @@ export default function PlayerBar() {
           <button
             className={`player-btn player-mode-btn ${playMode !== 'sequence' ? 'active' : ''}`}
             onClick={cyclePlayMode}
-            title={playMode === 'sequence' ? '顺序播放' : playMode === 'random' ? '随机播放' : '单曲循环'}
+            title={modeLabel}
+            aria-label={`播放模式：${modeLabel}，点击切换`}
           >
             {playMode === 'sequence' ? (
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
@@ -114,6 +118,8 @@ export default function PlayerBar() {
             </svg>
             <input
               type="range"
+              aria-label="音量"
+              aria-valuetext={`${Math.round(volume * 100)}%`}
               min="0"
               max="1"
               step="0.01"
@@ -124,6 +130,10 @@ export default function PlayerBar() {
           </div>
         </div>
       </div>
-    </div>
+      <div className={`player-feedback${error ? ' has-error' : ''}`}>
+        <span role="status" aria-live="polite">{error || (loading ? '正在加载音乐…' : `${isPlaying ? '正在播放' : '已暂停'} · ${modeLabel}`)}</span>
+        {error && <button className="player-retry" onClick={retryPlayback}>重试</button>}
+      </div>
+    </section>
   )
 }
