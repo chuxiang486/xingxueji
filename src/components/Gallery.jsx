@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { images, imageCategories } from '../data/images'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Gallery.css'
@@ -7,23 +8,25 @@ function GalleryItem({ img, index, sectionVisible, onClick }) {
   const [loaded, setLoaded] = useState(false)
 
   return (
-    <div
+    <button
+      type="button"
+      aria-label={`查看大图：${img.title}`}
       className={`gallery-item${sectionVisible ? ' reveal' : ''}`}
       style={{ transitionDelay: sectionVisible ? `${index * 0.05}s` : '0s' }}
       onClick={onClick}
     >
-      <div className={`gallery-img-wrap${loaded ? ' loaded' : ''}`}>
+      <span className={`gallery-img-wrap${loaded ? ' loaded' : ''}`}>
         <img
           src={img.src}
           alt={img.title}
           loading="lazy"
           onLoad={() => setLoaded(true)}
         />
-      </div>
-      <div className="gallery-item-overlay">
+      </span>
+      <span className="gallery-item-overlay">
         <span>{img.title}</span>
-      </div>
-    </div>
+      </span>
+    </button>
   )
 }
 
@@ -31,12 +34,33 @@ export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState('全部')
   const [lightboxIndex, setLightboxIndex] = useState(null)
   const [sectionRef, sectionVisible] = useScrollReveal()
+  const dialogRef = useRef(null)
+  const triggerRef = useRef(null)
+  const lightboxOpen = lightboxIndex !== null
 
   const filtered = activeCategory === '全部'
     ? images
     : images.filter(img => img.category === activeCategory)
 
-  const openLightbox = (index) => setLightboxIndex(index)
+  const openLightbox = (index) => {
+    triggerRef.current = document.activeElement
+    setLightboxIndex(index)
+  }
+
+  useEffect(() => {
+    if (!lightboxOpen) return
+    const previousOverflow = document.body.style.overflow
+    const root = document.getElementById('root')
+    const previousInert = root?.inert
+    if (root) root.inert = true
+    document.body.style.overflow = 'hidden'
+    dialogRef.current?.querySelector('button')?.focus()
+    return () => {
+      document.body.style.overflow = previousOverflow
+      if (root) root.inert = previousInert
+      triggerRef.current?.focus()
+    }
+  }, [lightboxOpen])
 
   const closeLightbox = useCallback(() => {
     setLightboxIndex(null)
@@ -54,8 +78,15 @@ export default function Gallery() {
     if (lightboxIndex === null) return
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowLeft') goPrev()
-      if (e.key === 'ArrowRight') goNext()
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev() }
+      if (e.key === 'ArrowRight') { e.preventDefault(); goNext() }
+      if (e.key === 'Tab') {
+        const buttons = [...dialogRef.current.querySelectorAll('button')]
+        const first = buttons[0]
+        const last = buttons[buttons.length - 1]
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus() }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus() }
+      }
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
@@ -69,6 +100,7 @@ export default function Gallery() {
         {imageCategories.map(cat => (
           <button
             key={cat}
+            aria-pressed={activeCategory === cat}
             className={`tab ${activeCategory === cat ? 'active' : ''}`}
             onClick={() => setActiveCategory(cat)}
           >
@@ -90,13 +122,13 @@ export default function Gallery() {
       </div>
 
       {lightboxIndex !== null && filtered[lightboxIndex] && (
-        <div className="lightbox" onClick={closeLightbox}>
-          <button className="lightbox-close" onClick={closeLightbox}>
+        createPortal(<div ref={dialogRef} role="dialog" aria-modal="true" aria-label="图片预览" className="lightbox" onClick={closeLightbox}>
+          <button aria-label="关闭图片预览" className="lightbox-close" onClick={closeLightbox}>
             <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
               <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
             </svg>
           </button>
-          <button className="lightbox-nav lightbox-prev" onClick={(e) => { e.stopPropagation(); goPrev() }}>
+          <button aria-label="上一张图片" className="lightbox-nav lightbox-prev" onClick={(e) => { e.stopPropagation(); goPrev() }}>
             <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
               <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
             </svg>
@@ -107,15 +139,16 @@ export default function Gallery() {
             alt={filtered[lightboxIndex].title}
             onClick={(e) => e.stopPropagation()}
           />
-          <button className="lightbox-nav lightbox-next" onClick={(e) => { e.stopPropagation(); goNext() }}>
+          <button aria-label="下一张图片" className="lightbox-nav lightbox-next" onClick={(e) => { e.stopPropagation(); goNext() }}>
             <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
               <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
             </svg>
           </button>
-          <div className="lightbox-counter">
-            {lightboxIndex + 1} / {filtered.length}
+          <div className="lightbox-counter" aria-live="polite">
+            {filtered[lightboxIndex].title} · {lightboxIndex + 1} / {filtered.length}
+            {filtered[lightboxIndex].work && <span className="lightbox-work">{filtered[lightboxIndex].work}</span>}
           </div>
-        </div>
+        </div>, document.body)
       )}
     </section>
   )

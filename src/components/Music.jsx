@@ -20,6 +20,7 @@ const categoryColors = {
 export default function Music() {
   const [activeCategory, setActiveCategory] = useState('全部')
   const [search, setSearch] = useState('')
+  const [showAll, setShowAll] = useState(false)
   const [expandedCats, setExpandedCats] = useState(() => {
     const init = {}
     musicCategories.forEach(c => { init[c] = true })
@@ -62,8 +63,13 @@ export default function Music() {
         {musicCategories.map(cat => (
           <button
             key={cat}
+            aria-pressed={activeCategory === cat}
             className={`tab ${activeCategory === cat ? 'active' : ''}`}
-            onClick={() => setActiveCategory(cat)}
+            onClick={() => {
+              setActiveCategory(cat)
+              setShowAll(false)
+              setExpandedCats(prev => ({ ...prev, [cat]: true }))
+            }}
           >
             {cat}
           </button>
@@ -75,8 +81,13 @@ export default function Music() {
           type="text"
           className="music-search"
           placeholder="搜索歌名或歌手..."
+          aria-label="搜索歌名或歌手"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setSearch(e.target.value)
+            setShowAll(false)
+            setExpandedCats(prev => ({ ...prev, [activeCategory]: true }))
+          }}
         />
       </div>
 
@@ -89,8 +100,10 @@ export default function Music() {
               <span className="song-group-count">{filtered.length} 首</span>
             </div>
             <div className="song-group-list">
-              {filtered.map((song, idx) => (
-                <div
+              {(showAll ? filtered : filtered.slice(0, 12)).map((song, idx) => (
+                <button
+                  type="button"
+                  aria-label={`播放 ${song.title}，${song.artist}`}
                   key={song.id}
                   className={`song-item ${isCurrentSong(song) ? 'playing' : ''}`}
                   onClick={() => handlePlaySong(filtered, idx)}
@@ -113,7 +126,7 @@ export default function Music() {
                       </svg>
                     )}
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -122,6 +135,7 @@ export default function Music() {
             <div key={cat} className="song-group">
               <button
                 className="song-group-header"
+                aria-expanded={expandedCats[cat]}
                 onClick={() => toggleCat(cat)}
               >
                 <span className="song-group-dot" style={{ background: categoryColors[cat] || 'rgba(140,120,220,0.25)' }} />
@@ -140,8 +154,10 @@ export default function Music() {
 
               {expandedCats[cat] && (
                 <div className="song-group-list">
-                  {catSongs.map((song, idx) => (
-                    <div
+                  {(showAll ? catSongs : catSongs.slice(0, 12)).map((song, idx) => (
+                    <button
+                      type="button"
+                      aria-label={`播放 ${song.title}，${song.artist}`}
                       key={song.id}
                       className={`song-item ${isCurrentSong(song) ? 'playing' : ''}`}
                       onClick={() => handlePlaySong(catSongs, idx)}
@@ -164,7 +180,7 @@ export default function Music() {
                           </svg>
                         )}
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -175,6 +191,17 @@ export default function Music() {
           <p className="song-empty">没有找到匹配的歌曲</p>
         )}
       </div>
+
+      {filtered.length > 12 && (
+        <div className="music-expand-wrap">
+          <button className="tab" aria-expanded={showAll} onClick={() => {
+            setShowAll(value => !value)
+            setExpandedCats(prev => ({ ...prev, [activeCategory]: true }))
+          }}>
+            {showAll ? '收起列表' : `查看全部 ${filtered.length} 首`}
+          </button>
+        </div>
+      )}
 
       <p className="song-count">
         共 {filtered.length} 首

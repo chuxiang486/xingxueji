@@ -57,6 +57,12 @@
 }
 
 .gallery-item {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  font: inherit;
   position: relative;
   border-radius: 8px;
   overflow: hidden;
@@ -75,6 +81,7 @@
 }
 
 .gallery-img-wrap {
+  display: block;
   position: relative;
   overflow: hidden;
 }
@@ -213,6 +220,9 @@
 }
 
 .lightbox-counter {
+  text-align: center;
+  width: max-content;
+  max-width: 85vw;
   position: absolute;
   bottom: 1.5rem;
   left: 50%;
@@ -220,6 +230,12 @@
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.85rem;
   letter-spacing: 0.1em;
+}
+
+.lightbox-work {
+  display: block;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
 }
 
 @keyframes zoomIn {

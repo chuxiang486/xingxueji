@@ -8,6 +8,15 @@ html {
   scroll-behavior: smooth;
 }
 
+button:focus-visible, a:focus-visible, input:focus-visible {
+  outline: 2px solid #c5b8ff;
+  outline-offset: 4px;
+}
+
+.gallery-item:focus-visible .gallery-item-overlay {
+  opacity: 1;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
   background: #0a0a14;

@@ -1,4 +1,6 @@
-export const images = [
+import { imageMetadata } from './imageMetadata'
+
+const imageEntries = [
   { id: 1, src: 'https://img.026924.xyz/20200324171249_spioe.webp', category: '游戏', title: '明日方舟' },
   { id: 2, src: 'https://img.026924.xyz/OIP-C.webp', category: '游戏', title: '明日方舟' },
   { id: 3, src: 'https://img.026924.xyz/OIP-C-2.webp', category: '游戏', title: '明日方舟' },
@@ -32,5 +34,18 @@ export const images = [
   { id: 31, src: 'https://img.026924.xyz/IMG_20250429_135851_505.webp', category: '动漫', title: 'IMG 20250429 135851' },
   { id: 32, src: 'https://img.026924.xyz/ims(1).webp', category: '动漫', title: 'ims(1)' },
 ]
+
+// 无可靠作品信息的图片使用收藏编号，避免把文件名当作展示标题。
+const categoryCounts = {}
+export const images = imageEntries.map(image => {
+  categoryCounts[image.category] = (categoryCounts[image.category] || 0) + 1
+  const number = String(categoryCounts[image.category]).padStart(2, '0')
+  const title = image.title === '明日方舟'
+    ? `明日方舟 · ${number}`
+    : /^(?:[0-9a-f]{10,}|\d+ p0|Image|IMG \d.*|ims\(1\))$/i.test(image.title)
+      ? `${image.category}收藏 · ${number}`
+      : image.title
+  return { ...image, title, identification: 'unresolved', ...imageMetadata[image.id] }
+})
 
 export const imageCategories = ['全部', '游戏', '动漫', '其他']
