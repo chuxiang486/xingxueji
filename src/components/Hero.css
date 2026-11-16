@@ -39,20 +39,31 @@
 
 .hero-title,
 .hero-subtitle {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.hero-title.reveal {
   opacity: 1;
   transform: translateY(0);
+  animation: heroEnter 0.8s ease both;
 }
 
-.hero-subtitle.reveal {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.2s;
+.hero-subtitle {
+  animation-delay: 0.2s;
+}
+
+@keyframes heroEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title,
+  .hero-subtitle {
+    animation: none;
+  }
 }
 
 .hero-title {

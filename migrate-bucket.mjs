@@ -1,6 +1,5 @@
 import { readFileSync, readdirSync, createReadStream } from 'fs'
 import { join, basename } from 'path'
-import { fileURLToPath } from 'url'
 import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url)
@@ -24,7 +23,7 @@ function uploadFile(filePath, filename) {
     const putExtra = new qiniu.form_up.PutExtra()
     const readable = createReadStream(filePath)
 
-    formUploader.putStream(uploadToken, filename, readable, putExtra, (err, body, info) => {
+    formUploader.putStream(uploadToken, filename, readable, putExtra, (err, body) => {
       if (err) reject(err)
       else resolve(body)
     })

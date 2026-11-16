@@ -9,7 +9,10 @@ export default function StarBackground() {
     if (!canvas) return
 
     const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
     let animationId
+    let previousTime = null
     let stars = []
     let meteors = []
     let lastMeteorTime = 0
@@ -18,10 +21,11 @@ export default function StarBackground() {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
       initStars()
+      if (motionPreference.matches || document.hidden) draw(performance.now())
     }
 
     const initStars = () => {
-      const count = Math.floor((canvas.width * canvas.height) / 8000)
+      const count = Math.min(180, Math.floor((canvas.width * canvas.height) / 8000))
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
@@ -48,12 +52,14 @@ export default function StarBackground() {
       })
     }
 
-    const draw = () => {
+    const draw = (now) => {
+      const step = motionPreference.matches ? 0 : previousTime === null ? 1 : Math.min((now - previousTime) / (1000 / 60), 2)
+      previousTime = now
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       for (const star of stars) {
-        star.y -= star.speed
-        star.twinklePhase += star.twinkleSpeed
+        star.y -= star.speed * step
+        star.twinklePhase += star.twinkleSpeed * step
 
         if (star.y < -5) {
           star.y = canvas.height + 5
@@ -69,8 +75,7 @@ export default function StarBackground() {
         ctx.fill()
       }
 
-      const now = performance.now()
-      if (now - lastMeteorTime > 3000 + Math.random() * 5000) {
+      if (!motionPreference.matches && now - lastMeteorTime > 3000 + Math.random() * 5000) {
         spawnMeteor()
         lastMeteorTime = now
       }
@@ -80,9 +85,9 @@ export default function StarBackground() {
         m.trail.unshift({ x: m.x, y: m.y })
         if (m.trail.length > m.trailLength) m.trail.pop()
 
-        m.x += m.vx
-        m.y += m.vy
-        m.life -= m.decay
+        m.x += m.vx * step
+        m.y += m.vy * step
+        m.life -= m.decay * step
 
         if (m.life <= 0 || m.x > canvas.width + 50 || m.y > canvas.height + 50) {
           meteors.splice(i, 1)
@@ -107,18 +112,31 @@ export default function StarBackground() {
         ctx.fill()
       }
 
-      animationId = requestAnimationFrame(draw)
+      if (!document.hidden && !motionPreference.matches) {
+        animationId = requestAnimationFrame(draw)
+      }
+    }
+
+    const syncAnimation = () => {
+      cancelAnimationFrame(animationId)
+      previousTime = null
+      if (motionPreference.matches) meteors = []
+      if (!document.hidden) draw(performance.now())
     }
 
     resize()
-    draw()
+    syncAnimation()
 
     window.addEventListener('resize', resize)
+    document.addEventListener('visibilitychange', syncAnimation)
+    motionPreference.addEventListener('change', syncAnimation)
     return () => {
       window.removeEventListener('resize', resize)
+      document.removeEventListener('visibilitychange', syncAnimation)
+      motionPreference.removeEventListener('change', syncAnimation)
       cancelAnimationFrame(animationId)
     }
   }, [])
 
-  return <canvas ref={canvasRef} className="star-background" />
+  return <canvas ref={canvasRef} className="star-background" aria-hidden="true" />
 }

@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync, readdirSync, statSync, mkdirSync, renameSync, copyFileSync } from 'fs'
-import { join, basename, extname } from 'path'
+import { join, extname } from 'path'
 
 // ============ 配置区 ============
 const IMAGES_JS_PATH = './src/data/images.js'
@@ -80,7 +80,6 @@ async function main() {
   const newEntries = []
   for (const file of files) {
     const srcPath = join(NEW_IMAGES_DIR, file)
-    const ext = extname(file).toLowerCase()
     
     // 统一用 webp 或保持原格式
     const targetName = file

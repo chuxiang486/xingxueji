@@ -22,6 +22,29 @@ function setup(t, options = {}) {
 }
 const settle = () => new Promise(resolve => setImmediate(resolve))
 
+test('music snapshot stays stable for progress and volume updates but changes for song and playback', async t => {
+  const { engine, audio } = setup(t)
+  const idle = engine.getMusicSnapshot()
+  engine.changeVolume(0.4)
+  assert.equal(engine.getMusicSnapshot(), idle)
+  engine.playSong(songs, 0)
+  await settle()
+  const playing = engine.getMusicSnapshot()
+  assert.equal(playing.currentSong, songs[0])
+  assert.equal(playing.isPlaying, true)
+  for (let second = 1; second <= 100; second++) {
+    audio.currentTime = second
+    audio.dispatchEvent(new Event('timeupdate'))
+    assert.equal(engine.getMusicSnapshot(), playing)
+    assert.equal(engine.getSnapshot().currentTime, second)
+  }
+  engine.pause()
+  assert.notEqual(engine.getMusicSnapshot(), playing)
+  assert.equal(engine.getMusicSnapshot().isPlaying, false)
+  engine.playSong(songs, 1)
+  assert.equal(engine.getMusicSnapshot().currentSong, songs[1])
+})
+
 test('preferences survive a new player; malformed and blocked storage fall back safely', t => {
   let saved = '{}'
   const storage = { getItem: () => saved, setItem: (_, value) => { saved = value } }

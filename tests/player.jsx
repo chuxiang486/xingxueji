@@ -1,7 +1,8 @@
 // Development-only harness; not an entry in the production build.
 import React, { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { PlayerProvider, usePlayer } from '../src/context/PlayerContext'
+import { PlayerProvider } from '../src/context/PlayerContext'
+import { usePlayer } from '../src/context/usePlayer'
 import PlayerBar from '../src/components/PlayerBar'
 import '../src/App.css'
 
@@ -24,7 +25,7 @@ const tracks = [
   { id: 'local2', title: '第二首 · 用于切歌验证', artist: '星尘集播放器验证', url },
   { id: 'missing', title: '失效音源 · 用于重试验证', artist: '星尘集播放器验证', url: '/tests/missing-audio.mp3' },
 ]
-function Harness() {
+export default function Harness() {
   const player = usePlayer()
   return <main style={{ padding: 24 }}>
     <h1>播放器本地验证</h1>

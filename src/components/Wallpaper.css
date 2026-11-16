@@ -200,6 +200,9 @@
 }
 
 .wallpaper-thumbnail {
+  padding: 0;
+  background: transparent;
+  font: inherit;
   position: relative;
   aspect-ratio: 16 / 9;
   border-radius: 10px;

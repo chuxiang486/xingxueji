@@ -6,6 +6,8 @@ import './Gallery.css'
 
 function GalleryItem({ img, index, sectionVisible, onClick }) {
   const [loaded, setLoaded] = useState(false)
+  const [useOriginal, setUseOriginal] = useState(false)
+  const [failed, setFailed] = useState(false)
 
   return (
     <button
@@ -15,13 +17,23 @@ function GalleryItem({ img, index, sectionVisible, onClick }) {
       style={{ transitionDelay: sectionVisible ? `${index * 0.05}s` : '0s' }}
       onClick={onClick}
     >
-      <span className={`gallery-img-wrap${loaded ? ' loaded' : ''}`}>
+      <span className={`gallery-img-wrap${loaded || failed ? ' loaded' : ''}`}>
         <img
-          src={img.src}
+          src={useOriginal ? img.src : img.preview || img.src}
+          srcSet={useOriginal ? undefined : img.srcSet}
+          sizes="(max-width: 600px) calc(100vw - 3rem), (max-width: 900px) calc((100vw - 5rem) / 2), 360px"
+          width={img.width}
+          height={img.height}
           alt={img.title}
           loading="lazy"
+          decoding="async"
           onLoad={() => setLoaded(true)}
+          onError={() => {
+            if (!useOriginal && img.preview) setUseOriginal(true)
+            else setFailed(true)
+          }}
         />
+        {failed && <span className="gallery-image-error">图片暂时无法加载，点击查看原图</span>}
       </span>
       <span className="gallery-item-overlay">
         <span>{img.title}</span>

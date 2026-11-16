@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { songs, musicCategories } from '../data/music'
-import { usePlayer } from '../context/PlayerContext'
+import { useMusicPlayer } from '../context/usePlayer'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Music.css'
 
@@ -27,19 +27,23 @@ export default function Music() {
     return init
   })
   const [sectionRef, sectionVisible] = useScrollReveal()
-  const { playSong, currentSong, isPlaying } = usePlayer()
+  const { playSong, currentSong, isPlaying } = useMusicPlayer()
 
   const keyword = search.trim().toLowerCase()
 
-  const filtered = songs
-    .filter(s => activeCategory === '全部' || s.category === activeCategory)
-    .filter(s => !keyword || s.title.toLowerCase().includes(keyword) || s.artist.toLowerCase().includes(keyword))
+  const filtered = useMemo(() => songs.filter(song =>
+    (activeCategory === '全部' || song.category === activeCategory) &&
+    (!keyword || song.title.toLowerCase().includes(keyword) || song.artist.toLowerCase().includes(keyword))
+  ), [activeCategory, keyword])
 
-  const grouped = {}
-  for (const song of filtered) {
-    if (!grouped[song.category]) grouped[song.category] = []
-    grouped[song.category].push(song)
-  }
+  const grouped = useMemo(() => {
+    const groups = {}
+    for (const song of filtered) {
+      if (!groups[song.category]) groups[song.category] = []
+      groups[song.category].push(song)
+    }
+    return groups
+  }, [filtered])
 
   const toggleCat = (cat) => {
     setExpandedCats(prev => ({ ...prev, [cat]: !prev[cat] }))

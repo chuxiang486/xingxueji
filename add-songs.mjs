@@ -6,7 +6,6 @@ import { createHmac } from 'crypto'
 const QINIU_ACCESS_KEY = '9qgLzhmQMu77v85Qa5ZPczPSi4bXgOsNhqg4n86E'
 const QINIU_SECRET_KEY = 'DTRMrnWf2VjaScSutVV2qGWXVCvmeZvkzdDmIa2U'
 const QINIU_BUCKET = 'xingxueji-music'
-const QINIU_DOMAIN = 'http://music.026924.xyz'
 const MUSIC_JS_PATH = './src/data/music.js'
 const NEW_SONGS_DIR = './new-songs'  // 把新 MP3 放这里
 // ================================
@@ -88,7 +87,6 @@ async function main() {
   const songsMatch = musicContent.match(/export const songs = \[([\s\S]*?)\n\]/)
   if (!songsMatch) throw new Error('无法解析 music.js')
 
-  const existingSongs = []
   const idMatch = [...musicContent.matchAll(/"id":\s*(\d+)/g)]
   const maxId = idMatch.length ? Math.max(...idMatch.map(m => parseInt(m[1]))) : 0
 

@@ -1,4 +1,5 @@
 import { imageMetadata } from './imageMetadata'
+import { imageVariants } from './imageVariants'
 
 const imageEntries = [
   { id: 1, src: 'https://img.026924.xyz/20200324171249_spioe.webp', category: '游戏', title: '明日方舟' },
@@ -45,7 +46,8 @@ export const images = imageEntries.map(image => {
     : /^(?:[0-9a-f]{10,}|\d+ p0|Image|IMG \d.*|ims\(1\))$/i.test(image.title)
       ? `${image.category}收藏 · ${number}`
       : image.title
-  return { ...image, title, identification: 'unresolved', ...imageMetadata[image.id] }
+  const file = decodeURIComponent(new URL(image.src, 'https://local.invalid').pathname.split('/').pop())
+  return { ...image, title, identification: 'unresolved', ...imageMetadata[image.id], ...imageVariants.gallery[file] }
 })
 
 export const imageCategories = ['全部', '游戏', '动漫', '其他']

@@ -18,11 +18,16 @@ export class PlayerEngine {
     this.request = 0
     this.history = []
     this.state = { playlist: [], currentIndex: -1, currentSong: null, isPlaying: false, currentTime: 0, duration: 0, status: 'idle', error: '', ...readSettings(storage) }
+    this.musicState = { currentSong: null, isPlaying: false }
   }
   subscribe = (listener) => { this.listeners.add(listener); return () => this.listeners.delete(listener) }
   getSnapshot = () => this.state
+  getMusicSnapshot = () => this.musicState
   update(patch) {
     this.state = { ...this.state, ...patch }
+    if (this.musicState.currentSong !== this.state.currentSong || this.musicState.isPlaying !== this.state.isPlaying) {
+      this.musicState = { currentSong: this.state.currentSong, isPlaying: this.state.isPlaying }
+    }
     this.syncSession()
     this.listeners.forEach(listener => listener())
   }

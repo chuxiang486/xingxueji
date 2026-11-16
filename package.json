@@ -4,10 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "images:build": "node scripts/build-image-variants.mjs",
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "test": "node --test src/context/playerEngine.test.js",
+    "test": "node --test src/context/playerEngine.test.js tests/effects.test.js tests/imageAssets.test.js",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "@vitejs/plugin-react": "^6.1.1",
     "oxlint": "^1.81.0",
     "qiniu": "^7.15.2",
+    "sharp": "^0.35.5",
     "vite": "^8.3.0"
   }
 }

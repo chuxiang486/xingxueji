@@ -1,4 +1,4 @@
-import { usePlayer } from '../context/PlayerContext'
+import { usePlayer } from '../context/usePlayer'
 import './PlayerBar.css'
 
 function formatTime(s) {
