@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { wallpapers } from '../data/wallpapers'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Wallpaper.css'
 
-export default function Wallpaper() {
+export default function Wallpaper({ wallpapers }) {
   const [currentIndex, setCurrentIndex] = useState(() => wallpapers.length ? Math.floor(Math.random() * wallpapers.length) : null)
   const [showBrowser, setShowBrowser] = useState(false)
   const [isRevealing, setIsRevealing] = useState(true)
@@ -17,7 +16,7 @@ export default function Wallpaper() {
     if (wallpapers.length === 1) return 0
     const offset = 1 + Math.floor(Math.random() * (wallpapers.length - 1))
     return (currentIndex + offset) % wallpapers.length
-  }, [currentIndex])
+  }, [currentIndex, wallpapers.length])
 
   useEffect(() => {
     const svg = svgFilterRef.current
@@ -87,7 +86,7 @@ export default function Wallpaper() {
     const newIndex = getRandomIndex()
     setCurrentIndex(newIndex)
     setIsRevealing(true)
-  }, [getRandomIndex])
+  }, [getRandomIndex, wallpapers.length])
 
   const selectWallpaper = useCallback((index) => {
     setShowBrowser(false)
@@ -101,12 +100,14 @@ export default function Wallpaper() {
     const item = wallpapers[currentIndex]
     const link = document.createElement('a')
     link.href = item.src
-    link.download = `${item.title}.png`
+    const extension = new URL(item.src, document.baseURI).pathname.match(/\.(png|webp|jpe?g|avif|gif)$/i)?.[0] || ''
+    link.download = item.title + extension
+    link.rel = 'noopener'
     link.target = '_blank'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }, [currentIndex])
+  }, [currentIndex, wallpapers])
 
   useEffect(() => {
     if (!showBrowser) return

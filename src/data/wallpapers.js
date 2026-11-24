@@ -1,4 +1,4 @@
-import { imageVariants } from './imageVariants'
+import { imageVariants } from './imageVariants.js'
 
 // Original PNGs are local so downloads work without cross-origin restrictions.
 export const wallpapers = [

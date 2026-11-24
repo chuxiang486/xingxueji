@@ -1,4 +1,3 @@
-import { animeList, gameList } from '../data/collections'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Collection.css'
 
@@ -14,7 +13,7 @@ function StarRating({ rating }) {
   return <span className="star-rating">{stars}</span>
 }
 
-export default function Collection() {
+export default function Collection({ animeList, gameList }) {
   const [sectionRef, sectionVisible] = useScrollReveal()
 
   return (

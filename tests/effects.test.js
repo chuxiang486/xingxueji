@@ -81,7 +81,7 @@ async function mount(name, { nodes = [], visible = true, reduced = false, loadTw
       cursor = 0
       nodeIndex = 0
       pending = []
-      const tree = component()
+      const tree = component({ wallpapers: context.wallpapers })
       pending.forEach(run => run())
       return tree
     },

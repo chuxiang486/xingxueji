@@ -1,5 +1,5 @@
-import { imageMetadata } from './imageMetadata'
-import { imageVariants } from './imageVariants'
+import { imageMetadata } from './imageMetadata.js'
+import { imageVariants } from './imageVariants.js'
 
 const imageEntries = [
   { id: 1, src: 'https://img.026924.xyz/20200324171249_spioe.webp', category: '游戏', title: '明日方舟' },

@@ -7,6 +7,7 @@ import Hero from './components/Hero'
 import Gallery from './components/Gallery'
 import Wallpaper from './components/Wallpaper'
 import Music from './components/Music'
+import ManagedContent from './components/ManagedContent'
 import Collection from './components/Collection'
 import Guestbook from './components/Guestbook'
 import Footer from './components/Footer'
@@ -24,10 +25,10 @@ function App() {
         <EasterEgg />
         <Navbar />
         <Hero />
-        <Gallery />
-        <Wallpaper />
+        <ManagedContent sections="gallery" id="gallery" title="图片收藏">{images => <Gallery images={images} />}</ManagedContent>
+        <ManagedContent sections="wallpapers" id="wallpaper" title="壁纸专区">{items => <Wallpaper wallpapers={items} />}</ManagedContent>
         <Music />
-        <Collection />
+        <ManagedContent sections="anime,games" id="collection" title="我的收藏">{(animeList, gameList) => <Collection animeList={animeList} gameList={gameList} />}</ManagedContent>
         <Guestbook />
         <Footer />
         <PlayerBar />

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>内容管理 · 星尘集</title>
+<style>
+* { box-sizing:border-box }
+body { margin:0 auto; padding:2rem 1rem; max-width:850px; background:#10101a; color:#eeeaf8; font:16px/1.6 system-ui,sans-serif; color-scheme:dark }
+a { color:#cfbefd }
+h1 { margin:.7rem 0 }
+fieldset { border:0; margin:0; padding:0 }
+section, form { background:#1e1b2b; border-radius:12px; padding:1rem; margin:.8rem 0 }
+label { display:block; margin:.65rem 0 }
+input, select { display:block; width:100%; padding:.6rem; border:1px solid #665e78; border-radius:5px; background:#151320; color:inherit; font:inherit }
+button { background:#d6c7f5; color:#231935; font:inherit; border:0; border-radius:6px; padding:.55rem 1rem; margin:.2rem .3rem .2rem 0; cursor:pointer }
+button:disabled { opacity:.5 }
+#remove { background:#efbcc6 }
+#status { min-height:1.5em }
+</style>
+<main>
+<a href="/">返回星尘集</a>
+<h1>内容管理</h1>
+<form id="login"><label>管理密钥<input name="token" type="password" required autocomplete="current-password"></label><button>进入后台</button></form>
+<fieldset id="workspace" hidden>
+<section>
+<label>管理栏目<select id="section"></select></label>
+<label>查找内容<input id="query" placeholder="输入标题或关键词"></label>
+<label>选择要编辑的条目<select id="list" size="6"></select></label>
+<button type="button" id="create">新增条目</button><button type="button" id="reload">重新加载</button><button type="button" id="logout">退出</button>
+</section>
+<form id="editor">
+<h2 id="heading">新增条目</h2>
+<div id="fields"></div>
+<img id="preview" alt="当前图片预览" style="max-width:100%;max-height:180px" hidden>
+<button>保存</button><button id="remove" type="button" hidden>删除条目</button>
+</form>
+</fieldset>
+<p id="status" role="status"></p>
+</main>
+<script type="module" src="/admin/catalog.js"></script>
+</html>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { images, imageCategories } from '../data/images'
+import { imageCategories } from '../data/images'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Gallery.css'
 
@@ -42,7 +42,7 @@ function GalleryItem({ img, index, sectionVisible, onClick }) {
   )
 }
 
-export default function Gallery() {
+export default function Gallery({ images }) {
   const [activeCategory, setActiveCategory] = useState('全部')
   const [lightboxIndex, setLightboxIndex] = useState(null)
   const [sectionRef, sectionVisible] = useScrollReveal()

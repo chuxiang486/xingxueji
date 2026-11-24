@@ -1,4 +1,6 @@
-# React + Vite
+# 星尘集
+
+站长日常操作、本地开发、生产部署和故障排查见[项目指导手册](docs/项目指导手册.md)。
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 

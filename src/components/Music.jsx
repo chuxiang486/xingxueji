@@ -1,5 +1,4 @@
-import { useMemo, useState } from 'react'
-import { songs, musicCategories } from '../data/music'
+import { useEffect, useMemo, useState } from 'react'
 import { useMusicPlayer } from '../context/usePlayer'
 import useScrollReveal from '../hooks/useScrollReveal'
 import './Music.css'
@@ -18,6 +17,39 @@ const categoryColors = {
 }
 
 export default function Music() {
+  const [catalog, setCatalog] = useState(null)
+  const [failed, setFailed] = useState(false)
+  const [attempt, setAttempt] = useState(0)
+  useEffect(() => {
+    const controller = new AbortController()
+    async function load() {
+      try {
+        const response = await fetch('/api/songs', { signal: controller.signal })
+        if (!response.ok) throw new Error('Catalog unavailable')
+        const data = await response.json()
+        if (!Array.isArray(data.songs) || !Array.isArray(data.categories)) throw new Error('Invalid catalog')
+        if (!controller.signal.aborted) setCatalog(data)
+      } catch {
+        if (!controller.signal.aborted) setFailed(true)
+      }
+    }
+    load()
+    return () => controller.abort()
+  }, [attempt])
+  if (catalog) return <MusicLibrary songs={catalog.songs} musicCategories={catalog.categories} />
+  return (
+    <section className="music" id="music">
+      <h2 className="section-title reveal">音乐收藏</h2>
+      <p className="song-empty" role="status">{failed ? '曲库暂时无法加载' : '正在加载曲库…'}</p>
+      {failed && <button className="tab" onClick={() => {
+        setFailed(false)
+        setAttempt(value => value + 1)
+      }}>重新加载曲库</button>}
+    </section>
+  )
+}
+
+function MusicLibrary({ songs, musicCategories }) {
   const [activeCategory, setActiveCategory] = useState('全部')
   const [search, setSearch] = useState('')
   const [showAll, setShowAll] = useState(false)
@@ -34,7 +66,7 @@ export default function Music() {
   const filtered = useMemo(() => songs.filter(song =>
     (activeCategory === '全部' || song.category === activeCategory) &&
     (!keyword || song.title.toLowerCase().includes(keyword) || song.artist.toLowerCase().includes(keyword))
-  ), [activeCategory, keyword])
+  ), [songs, activeCategory, keyword])
 
   const grouped = useMemo(() => {
     const groups = {}
@@ -58,6 +90,20 @@ export default function Music() {
   }
 
   const isAllView = activeCategory === '全部'
+
+  function tuneRadio() {
+    const queue = [...filtered]
+    for (let i = queue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      const song = queue[i]
+      queue[i] = queue[j]
+      queue[j] = song
+    }
+    if (queue.length > 1 && queue[0].id === currentSong?.id) {
+      [queue[0], queue[1]] = [queue[1], queue[0]]
+    }
+    if (queue.length) playSong(queue.slice(0, 5), 0)
+  }
 
   return (
     <section className="music" id="music" ref={sectionRef}>
@@ -94,6 +140,18 @@ export default function Music() {
           }}
         />
       </div>
+
+      <aside className="music-radio" aria-label="星尘电台">
+        <div>
+          <h3>星尘电台</h3>
+          <p>{filtered.length
+            ? `从${keyword ? '搜索结果' : isAllView ? '整个曲库' : activeCategory}里随机选 ${Math.min(5, filtered.length)} 首，陪你听一会儿。`
+            : '换个关键词，就能继续点播。'}</p>
+        </div>
+        <button type="button" onClick={tuneRadio} disabled={!filtered.length}>
+          <span aria-hidden="true">▶</span> 随机点播
+        </button>
+      </aside>
 
       <div className={`song-groups${sectionVisible ? ' reveal' : ''}`}>
         {isAllView ? (
